@@ -1,0 +1,39 @@
+﻿@using Cigler_Telerik.Models.Entities
+@model List<Cigler_Telerik.Models.Entities.Person>
+
+@{
+	ViewBag.Title = "Index";
+}
+
+<h2>@Html.ActionLink("Nová osoba", "Create")</h2>
+<script>
+	var dataSource = new kendo.data.DataSource(Model);
+</script>
+
+@(Html.Kendo().Grid(Model)
+	.Name("Test")
+	.Columns(c =>
+	{
+		c.Bound(p => p.FirstName);
+		c.Bound(p => p.LastName);
+
+		c.Bound(p => p.IC);
+		c.Bound(p => p.DIC);
+		c.Bound(p => p.Addresses).Template(
+			@<text>
+				<ul>
+					@foreach (var a in @item.Addresses)
+					{
+						<li>@a.Street, @a.PSC, @a.City</li>
+					}
+				</ul>
+			 </text>);
+		c.Bound(p => p.Id).Template(
+			@<text>
+				@Html.ActionLink("Pridat adresu", "Create", "Address", new {personId=@item.Id}, new {})
+				@Html.ActionLink("Upravit", "Edit", "People", new {id = @item.Id}, new {})
+				@Html.ActionLink("Smazat", "Delete", "People", new {id = @item.Id}, new {})
+			 </text>
+			).Title("Actions");
+	})
+	  .Pageable())
