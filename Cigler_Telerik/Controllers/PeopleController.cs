@@ -10,6 +10,8 @@ using Cigler_Telerik.Application;
 using Cigler_Telerik.Application.Ares;
 using Cigler_Telerik.DAL;
 using Cigler_Telerik.Models.Entities;
+using Kendo.Mvc.Extensions;
+using Kendo.Mvc.UI;
 
 namespace Cigler.Controllers
 {
@@ -17,8 +19,16 @@ namespace Cigler.Controllers
     {
         private CiglerContext db = new CiglerContext();
 
-        // GET: People
-        public ActionResult Index()
+		public ActionResult People_Read([DataSourceRequest]DataSourceRequest request)
+		{
+			IQueryable<Person> products = db.People;
+			DataSourceResult result = products.ToDataSourceResult(request);
+			return Json(result);
+		}
+
+
+		// GET: People
+		public ActionResult Index()
         {
             return View(db.People.ToList());
         }

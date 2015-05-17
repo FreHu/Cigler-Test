@@ -60,6 +60,7 @@ namespace Cigler_Telerik.DAL
 						PersonId = p.Id
 					};
 					db.Addresses.Add(adr);
+					db.SaveChanges();
 				}
 			}
 		

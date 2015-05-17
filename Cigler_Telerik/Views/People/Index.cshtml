@@ -19,21 +19,36 @@
 
 		c.Bound(p => p.IC);
 		c.Bound(p => p.DIC);
-		c.Bound(p => p.Addresses).Template(
-			@<text>
-				<ul>
-					@foreach (var a in @item.Addresses)
-					{
-						<li>@a.Street, @a.PSC, @a.City</li>
-					}
-				</ul>
-			 </text>);
-		c.Bound(p => p.Id).Template(
-			@<text>
-				@Html.ActionLink("Pridat adresu", "Create", "Address", new {personId=@item.Id}, new {})
-				@Html.ActionLink("Upravit", "Edit", "People", new {id = @item.Id}, new {})
-				@Html.ActionLink("Smazat", "Delete", "People", new {id = @item.Id}, new {})
-			 </text>
-			).Title("Actions");
+		c.Bound(p => p.Id).ClientTemplate(
+				@Html.ActionLink("Pridat adresu", "Create", "Address", new {personId= "#=Id#" }, new {}).ToString()
+			).Title("Nová Adresa")
+			.Sortable(false).Filterable(false);
+		c.Bound(p => p.Id).ClientTemplate(
+				@Html.ActionLink("Upravit", "Edit", "People", new { Id = "#=Id#" }, new { }).ToString()
+			).Title("Upravit")
+			.Sortable(false).Filterable(false);
+		c.Bound(p => p.Id).ClientTemplate(
+			@Html.ActionLink("Smazat", "Delete", "People", new { Id = "#=Id#" }, new { }).ToString()
+		).Title("Smazat")
+			.Sortable(false).Filterable(false);
 	})
-	  .Pageable())
+	  .Pageable()
+	  .Sortable()
+	  .Filterable()
+	  .DataSource(datasource=> datasource
+			.Ajax()
+			.Read(read=>read.Action("People_Read","People")))
+	  .ClientDetailTemplateId("template"))
+
+<script id="template" type="text/x-kendo-template">
+	<h3 style="margin-top:-5px">Adresy</h3>
+	# if (data.Addresses.length === 0) { #
+	Žádné nenalezeny
+	# } # 
+	# for (var i = 0; i < data.Addresses.length; i++) { #
+	<li>#=data.Addresses[i].Street #, #=data.Addresses[i].City #, #=data.Addresses[i].PSC #</li>
+	# } #
+
+</script>
+
+
